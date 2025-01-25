@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Smiles - Shopping Cart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .product-image {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2E8B57;
+        }
+        .price {
+            font-size: 1.5em;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .quantity {
+            width: 60px;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            color: #fff;
+            background: #27ae60;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #219150;
+        }
+        .total {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .order-page {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Green Smiles - Bamboo Toothbrush</h1>
+        <img src="img1.png" alt="Bamboo Toothbrush" class="product-image">
+        <p class="price">Rs. 200</p>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" class="quantity" value="1" min="1" max="50">
+        
+        <div class="total">Total: Rs.<span id="total-price">200</span></div>
+        
+        <button class="btn" onclick="addToCart()">Add to Cart</button>
+        
+        <div class="order-page" id="order-page"> <hr>
+            <h2>Order Summary</h2>
+            <p>Quantity: <span id="order-quantity"></span></p>
+            <p>Total Price: Rs. <span id="order-total"></span></p>
+            <button class="btn" onclick="downloadReceipt()">Download Receipt</button>
+        </div>
+    </div>
+
+    <script>
+        function addToCart() {
+            let quantity = document.getElementById('quantity').value;
+            let price = 200;
+            let total = (quantity * price).toFixed(2);
+            document.getElementById('total-price').textContent = total;
+            
+            document.getElementById('order-quantity').textContent = quantity;
+            document.getElementById('order-total').textContent = total;
+            alert("Item successfully added to the cart!");
+
+            document.getElementById('order-page').style.display = 'block';
+        }
+
+        function downloadReceipt() {
+            let { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+
+            let quantity = document.getElementById('order-quantity').textContent;
+            let total = document.getElementById('order-total').textContent;
+
+            // Title
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.setTextColor(46, 139, 87);
+            doc.text("Green Smiles - Receipt", 55, 30);
+
+            // Header line
+            doc.setDrawColor(46, 139, 87);
+            doc.setLineWidth(1.5);
+            doc.line(20, 40, 190, 40);
+
+            // Product details
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text("Product: Bamboo Toothbrush", 20, 60);
+            doc.text(`Quantity: ${quantity}`, 20, 80);
+            doc.text(`Total Price: Rs. ${total}`, 20, 100);
+
+
+
+            // Footer message
+            doc.setFontSize(14);
+            doc.setTextColor(100);
+            doc.text("Thank you for choosing Green Smiles!", 55, 120);
+
+            // Save the PDF
+            doc.save("Green_Smiles_Receipt.pdf");
+        }
+    </script>
+
+</body>
+</html>
