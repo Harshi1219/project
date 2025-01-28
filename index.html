@@ -1,4 +1,4 @@
-index<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -23,17 +23,20 @@ index<!DOCTYPE html>
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
+        .product {
+            margin-bottom: 30px;
+        }
         .product-image {
             width: 100%;
             max-width: 300px;
             border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         h1 {
             color: #2E8B57;
         }
         .price {
-            font-size: 1.5em;
+            font-size: 1.2em;
             color: #27ae60;
             font-weight: bold;
         }
@@ -44,12 +47,12 @@ index<!DOCTYPE html>
             border-radius: 5px;
             border: 1px solid #ccc;
             text-align: center;
-            font-size: 1.2em;
+            font-size: 1em;
         }
         .btn {
             display: inline-block;
-            padding: 15px 30px;
-            font-size: 1.2em;
+            padding: 10px 20px;
+            font-size: 1em;
             color: #fff;
             background: #27ae60;
             border: none;
@@ -61,7 +64,7 @@ index<!DOCTYPE html>
             background: #219150;
         }
         .total {
-            font-size: 1.5em;
+            font-size: 1.2em;
             font-weight: bold;
             margin: 20px 0;
         }
@@ -77,36 +80,72 @@ index<!DOCTYPE html>
 <body>
 
     <div class="container">
-        <h1>Green Smiles - Bamboo Toothbrush</h1>
-        <img src="img1.png" alt="Bamboo Toothbrush" class="product-image">
-        <p class="price">Rs. 200</p>
+        <h1>Green Smiles - Shopping Cart</h1>
 
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" class="quantity" value="1" min="1" max="50">
-        
-        <div class="total">Total: Rs.<span id="total-price">200</span></div>
-        
+        <div class="product">
+            <h2>Bamboo Toothbrush</h2>
+            <img src="img1.png" alt="Bamboo Toothbrush" class="product-image">
+            <p class="price">Rs. 200</p>
+
+            <label for="quantity1">Quantity:</label>
+            <input type="number" id="quantity1" class="quantity" value="0" min="0" max="50" onchange="updateTotals()">
+            <p class="total">Total for Bamboo Toothbrush: Rs.<span id="total-price1">0</span></p>
+        </div>
+
+        <div class="product">
+            <h2>Beetroot Jujubs</h2>
+            <img src="img2.png" alt="Beetroot Jujubs" class="product-image">
+            <p class="price">Rs. 50</p>
+
+            <label for="quantity2">Quantity:</label>
+            <input type="number" id="quantity2" class="quantity" value="0" min="0" max="50" onchange="updateTotals()">
+            <p class="total">Total for Beetroot Jujubs: Rs.<span id="total-price2">0</span></p>
+        </div>
+
+        <div class="total">Grand Total: Rs.<span id="grand-total">0</span></div>
+
         <button class="btn" onclick="addToCart()">Add to Cart</button>
-        
-        <div class="order-page" id="order-page"> <hr>
+
+        <div class="order-page" id="order-page">
+            <hr>
             <h2>Order Summary</h2>
-            <p>Quantity: <span id="order-quantity"></span></p>
-            <p>Total Price: Rs. <span id="order-total"></span></p>
+            <p>Bamboo Toothbrush - Quantity: <span id="order-quantity1"></span></p>
+            <p>Beetroot Jujubs - Quantity: <span id="order-quantity2"></span></p>
+            <p>Grand Total: Rs. <span id="order-total"></span></p>
             <button class="btn" onclick="downloadReceipt()">Download Receipt</button>
         </div>
     </div>
 
     <script>
-        function addToCart() {
-            let quantity = document.getElementById('quantity').value;
-            let price = 200;
-            let total = (quantity * price).toFixed(2);
-            document.getElementById('total-price').textContent = total;
-            
-            document.getElementById('order-quantity').textContent = quantity;
-            document.getElementById('order-total').textContent = total;
-            alert("Item successfully added to the cart!");
+        function updateTotals() {
+            let quantity1 = document.getElementById('quantity1').value;
+            let quantity2 = document.getElementById('quantity2').value;
 
+            let price1 = 200;
+            let price2 = 50;
+
+            let total1 = quantity1 * price1;
+            let total2 = quantity2 * price2;
+
+            document.getElementById('total-price1').textContent = total1.toFixed(2);
+            document.getElementById('total-price2').textContent = total2.toFixed(2);
+
+            let grandTotal = total1 + total2;
+            document.getElementById('grand-total').textContent = grandTotal.toFixed(2);
+        }
+
+        function addToCart() {
+            let quantity1 = document.getElementById('quantity1').value;
+            let quantity2 = document.getElementById('quantity2').value;
+
+            let total1 = document.getElementById('total-price1').textContent;
+            let total2 = document.getElementById('total-price2').textContent;
+
+            document.getElementById('order-quantity1').textContent = quantity1;
+            document.getElementById('order-quantity2').textContent = quantity2;
+            document.getElementById('order-total').textContent = (parseFloat(total1) + parseFloat(total2)).toFixed(2);
+
+            alert("Items successfully added to the cart!");
             document.getElementById('order-page').style.display = 'block';
         }
 
@@ -114,7 +153,8 @@ index<!DOCTYPE html>
             let { jsPDF } = window.jspdf;
             let doc = new jsPDF();
 
-            let quantity = document.getElementById('order-quantity').textContent;
+            let quantity1 = document.getElementById('order-quantity1').textContent;
+            let quantity2 = document.getElementById('order-quantity2').textContent;
             let total = document.getElementById('order-total').textContent;
 
             // Title
@@ -132,21 +172,19 @@ index<!DOCTYPE html>
             doc.setFont("helvetica", "normal");
             doc.setFontSize(16);
             doc.setTextColor(0, 0, 0);
-            doc.text("Product: Bamboo Toothbrush", 20, 60);
-            doc.text(`Quantity: ${quantity}`, 20, 80);
-            doc.text(`Total Price: Rs. ${total}`, 20, 100);
-
-
+            doc.text("Product Details:", 20, 50);
+            doc.text(`1. Bamboo Toothbrush - Quantity: ${quantity1}`, 20, 70);
+            doc.text(`2. Beetroot Jujubs - Quantity: ${quantity2}`, 20, 90);
+            doc.text(`Grand Total: Rs. ${total}`, 20, 110);
 
             // Footer message
             doc.setFontSize(14);
             doc.setTextColor(100);
-            doc.text("Thank you for choosing Green Smiles!", 55, 120);
+            doc.text("Thank you for choosing Green Smiles!", 55, 130);
 
             // Save the PDF
             doc.save("Green_Smiles_Receipt.pdf");
         }
     </script>
-
 </body>
 </html>
